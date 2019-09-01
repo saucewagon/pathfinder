@@ -16,6 +16,29 @@ function setup() {
   var y = (windowHeight - height) / 2;
   cnv.position(x, y);
 
+  w = width / numCols;
+  h = height / numRows;
+
+  for(var i = 0; i < numCols; i++){
+    grid[i] = new Array(numRows);
+  }
+  // Init new 2D array of Places
+  for(var i = 0; i < numCols; i++){
+    for(var j = 0; j < numRows; j++){
+      grid[i][j] = new Place(i, j);
+    }
+  }
+   for(var i = 0; i < numCols; i++){
+    for(var j = 0; j < numRows; j++){
+      grid[i][j].addNeighbors(grid);
+    }
+  } 
+
+  start = grid[0][0];
+  end = grid[numCols-1][numRows-1];
+  start.wall = false;
+  end.wall = false;
+
   if (astar){
     astarSetup(grid, numCols, numRows);
   }
@@ -24,82 +47,9 @@ function setup() {
 
 function draw() {
 
-  // Use draw as the while loop
-  if (openSet.length > 0){
-
-    // Find the lowest fScore index in the open set
-    var lowestFScoreIndex = 0;
-    for(var i = 0; i < openSet.length; i++){
-      if (openSet[i].fScore < openSet[lowestFScoreIndex].fScore){
-        lowestFScoreIndex = i;
-      }
-    }
-    var current = openSet[lowestFScoreIndex];
-    if (current === end){
-      noLoop();
-      console.log('dunzo');
-    }
-
-    removeFromArray(openSet, current);
-    closedSet.push(current);
-
-    var neighbors = current.neighbors;
-
-    for(var i = 0; i < neighbors.length; i++){
-      var neighbor = neighbors[i];
-
-      var newPath = false;
-      if (!closedSet.includes(neighbor) && !neighbor.wall){
-        var tentativeG = current.gScore + 1;
-        if (openSet.includes(neighbor)){
-          if (tentativeG < neighbor.gScore){
-            neighbor.gScore = tentativeG;
-            newPath = true;
-          }
-        } else {
-          neighbor.gScore = tentativeG;
-          newPath = true;
-          openSet.push(neighbor);
-        }
-        if (newPath){
-          neighbor.hScore = heuristic(neighbor, end);
-          neighbor.fScore = neighbor.gScore + neighbor.hScore;
-          neighbor.previous = current;
-        }
-      }
-    }
-  } else {
-    // No solution
-    console.log('no solution');
-    noLoop();
-    return;
+  if (astar){
+    performAstar();
   }
-  background(color(4,251,255));
-
-  for (var i = 0; i < numCols; i++){
-    for(var j = 0; j < numRows; j++){
-      grid[i][j].show(color(4,251,255));
-    }
-  }
-  for(var i = 0; i < closedSet.length; i++){
-    closedSet[i].show(color(4,4,255));
-  }
-  for(var i = 0; i < openSet.length; i++){
-    openSet[i].show(color(255,5,255));
-  }
-
-  if (!noSolution){
-      // Add all the previous Places to the final path list
-      path = [];
-      var temp = current;
-      path.push(temp);
-      while (temp.previous){
-        path.push(temp.previous);
-        temp = temp.previous;
-      }
-
-  }
-  drawPath(path);
 }
 function removeFromArray(arr, elt){
   for(var i = arr.length - 1; i >= 0; i--){
@@ -108,10 +58,7 @@ function removeFromArray(arr, elt){
     }
   }
 }
-function heuristic(a, b){
-  var distance = dist(a.i, a.j, b.i, b.j);
-  return distance;
-}
+
 function drawPath(path){
   noFill();
   stroke(color(4,255,12));
