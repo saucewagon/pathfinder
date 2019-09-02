@@ -1,5 +1,5 @@
-var numCols = 150;
-var numRows = 100;
+var numCols = 70*1.5;
+var numRows = 70;
 var grid = new Array();
 var openSet = [];
 var closedSet = [];
@@ -9,13 +9,17 @@ var w, h;
 var path = [];
 var noSolution = false;
 var astar = true;
+var run = true;
+var buttons = [];
+var dijkstra = false;
 
 function setup() {
-  var cnv = createCanvas(700*1.5,700);
+  var cnv = createCanvas(500*1.5,500);
   var x = (windowWidth - width) / 2;
   var y = (windowHeight - height) / 2;
   cnv.position(x, y);
 
+  dijkstra = false;
   w = width / numCols;
   h = height / numRows;
 
@@ -33,22 +37,27 @@ function setup() {
       grid[i][j].addNeighbors(grid);
     }
   } 
-
   start = grid[0][0];
   end = grid[numCols-1][numRows-1];
   start.wall = false;
+  start.isStartPlace = true;
   end.wall = false;
+  end.isEndPlace = true;
 
   if (astar){
     astarSetup(grid, numCols, numRows);
   }
-
 }
-
 function draw() {
+  if (!run){
+    //noLoop();
+  }
+  else{
+    //loop();
+    if (astar){
+      performAstar();
 
-  if (astar){
-    performAstar();
+    }
   }
 }
 function removeFromArray(arr, elt){
@@ -58,14 +67,61 @@ function removeFromArray(arr, elt){
     }
   }
 }
-
 function drawPath(path){
   noFill();
-  stroke(color(4,255,12));
-  strokeWeight(w/2);
+  stroke(color(0,255,0));
+  strokeWeight(w);
   beginShape();
   for(var i = 0; i < path.length; i++){
     vertex(path[i].i*w + w/2, path[i].j*h + h/2);
   }
   endShape();
+}
+function runButtonClicked(){
+  if (run){
+    run = false;
+    document.getElementsByClassName("radio").disabled = false;
+  }
+  else{
+    run = true;
+    document.getElementById("myRadio").disabled = true;
+  }
+}
+function restartButtonClicked(){
+
+  start.isStartPlace = false;
+  end.isEndPlace = false;
+  setup();
+  openSet = [];
+  closedSet = [];
+  path = [];
+
+  start = grid[Math.round(Math.floor(Math.random() * numCols)) + 1][Math.floor(Math.random() * numRows) + 1];
+  end = grid[Math.round(Math.floor(Math.random() * numCols)) + 1][Math.floor(Math.random() * numRows) + 1];
+  start.wall = false;
+  start.isStartPlace = true;
+  end.wall = false;
+  end.isEndPlace = true;
+ 
+  astarSetup(grid, numCols, numRows);
+  loop();
+}
+
+function handleClick(myRadio) {
+
+  if (myRadio.value == 2){
+    restartButtonClicked();
+    dijkstra = true;
+
+    console.log('bla');
+  }
+  else{
+    dijsktra = false;
+    restartButtonClicked();
+    console.log(myRadio.value)
+    console.log('dijk = ' +dijkstra);
+  }
+}
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }

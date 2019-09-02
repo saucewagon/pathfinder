@@ -1,7 +1,5 @@
 function astarSetup(grid, numCols, numRows){
     console.log('A*');
-
-
     openSet.push(start);
 }
 function performAstar(){
@@ -20,10 +18,8 @@ function performAstar(){
       noLoop();
       console.log('dunzo');
     }
-
     removeFromArray(openSet, current);
     closedSet.push(current);
-
     var neighbors = current.neighbors;
 
     for(var i = 0; i < neighbors.length; i++){
@@ -43,7 +39,14 @@ function performAstar(){
           openSet.push(neighbor);
         }
         if (newPath){
-          neighbor.hScore = heuristic(neighbor, end);
+            if (dijkstra){
+                neighbor.hScore = 0;
+                console.log('aint doing shit');
+            }
+            else{
+                console.log('calculating heuristic');
+                neighbor.hScore = heuristic(neighbor, end);
+            }
           neighbor.fScore = neighbor.gScore + neighbor.hScore;
           neighbor.previous = current;
         }
@@ -55,18 +58,23 @@ function performAstar(){
     noLoop();
     return;
   }
-  background(color(4,251,255));
+  background(color(179,0,0));
 
   for (var i = 0; i < numCols; i++){
     for(var j = 0; j < numRows; j++){
-      grid[i][j].show(color(4,251,255));
+        if (grid[i][j].isStartPlace || grid[i][j].isEndPlace){
+            grid[i][j].show(color(0,255,0));
+        }
+        else{
+            grid[i][j].show(color(0,0,0));
+        }
     }
   }
   for(var i = 0; i < closedSet.length; i++){
     closedSet[i].show(color(4,4,255));
   }
   for(var i = 0; i < openSet.length; i++){
-    openSet[i].show(color(255,5,255));
+    openSet[i].show(color(204, 253, 255));
   }
 
   if (!noSolution){
@@ -78,11 +86,10 @@ function performAstar(){
         path.push(temp.previous);
         temp = temp.previous;
       }
-
   }
   drawPath(path);
 }
 function heuristic(a, b){
     var distance = dist(a.i, a.j, b.i, b.j);
     return distance;
-  }
+}

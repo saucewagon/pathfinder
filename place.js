@@ -1,3 +1,4 @@
+
 class Place {
     constructor(i, j) {
       this.i = i,
@@ -8,8 +9,10 @@ class Place {
       this.neighbors = [];
       this.previous = undefined;
       this.wall = false;
+      this.isStartPlace = false;
+      this.isEndPlace = false;
   
-      if (random(1) < 0.5){
+      if (random(1) < 0.4){
         this.wall = true;
       }
   
@@ -17,16 +20,25 @@ class Place {
         fill(col);
   
         if (this.wall){
-          fill(0);
+          fill(color(255,164,152));
         }
-  
-        noStroke();
+        if (this.isEndPlace || this.isStartPlace){
+          stroke(0);
+        }
+        else
+         noStroke();
         
         if (this.wall){
-          ellipse(this.i * w + w/2, this.j * h + h/2, w/2, h/2);
+          rect(this.i * w + w/2, this.j * h + h/2, w/2, h/2);
         }
         else{
-          rect(this.i * w + w/2, this.j*h + h/2, w, h);
+          if (this.isEndPlace || this.isStartPlace){
+            ellipse(this.i * w + w/2, this.j*h + h/2, w*2, h*2);
+          }
+          else{
+            ellipse(this.i * w + w/2, this.j*h + h/2, w, h);
+          }
+          
         }
       };
       this.addNeighbors = (grid) => {
