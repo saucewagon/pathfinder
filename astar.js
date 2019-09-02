@@ -15,7 +15,7 @@ function performAstar(){
     }
     var current = openSet[lowestFScoreIndex];
     if (current === end){
-      //noLoop();
+      noLoop();
       console.log('dunzo');
     }
     removeFromArray(openSet, current);
@@ -53,7 +53,7 @@ function performAstar(){
   } else {
     // No solution
     console.log('no solution');
-    //noLoop();
+    noLoop();
     return;
   }
   background(color(179,0,0));
