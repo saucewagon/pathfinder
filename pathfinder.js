@@ -1,5 +1,7 @@
 var numCols = 70*1.5;
 var numRows = 70;
+var canvasWidth = 450*1.5;
+var canvasHeight = 450;
 var grid = new Array();
 var openSet = [];
 var closedSet = [];
@@ -15,10 +17,10 @@ var dijkstra = false;
 var canvas;
 
 function setup() {
-  canvas = createCanvas(500*1.5,500);
-  var x = (windowWidth - width) / 2;
+  canvas = createCanvas(canvasWidth, canvasHeight);
+  var x = ((windowWidth - width) / 2);
   var y = (windowHeight - height) / 2;
-  canvas.position(x, y);
+  canvas.position(x, y );
 
   dijkstra = false;
   w = width / numCols;
@@ -50,8 +52,10 @@ function setup() {
   }
 }
 function draw() {
-  canvas.canvas.width  = window.innerWidth;
-  canvas.canvas.height = window.innerHeight;
+
+  var x = ((windowWidth - width) / 1.2);
+  var y = (windowHeight - height) / 2;
+  canvas.position(x, y );
 
   if (!run){
     //noLoop();
@@ -60,7 +64,6 @@ function draw() {
     //loop();
     if (astar){
       performAstar();
-
     }
   }
 }
@@ -92,10 +95,11 @@ function runButtonClicked(){
   }
 }
 function restartButtonClicked(){
-
+  setup();
   start.isStartPlace = false;
   end.isEndPlace = false;
-  setup();
+  grid[0][0].isStartPlace = false;
+  grid[numCols-1][numRows-1].isEndPlace = false;
   openSet = [];
   closedSet = [];
   path = [];
@@ -127,5 +131,7 @@ function handleClick(myRadio) {
   }
 }
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+
+  if (windowWidth < canvasWidth || windowHeight < canvasHeight)
+    resizeCanvas(windowWidth*0.8, windowHeight*0.8, true);
 }

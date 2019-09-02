@@ -15,7 +15,7 @@ function performAstar(){
     }
     var current = openSet[lowestFScoreIndex];
     if (current === end){
-      noLoop();
+      //noLoop();
       console.log('dunzo');
     }
     removeFromArray(openSet, current);
@@ -41,10 +41,8 @@ function performAstar(){
         if (newPath){
             if (dijkstra){
                 neighbor.hScore = 0;
-                console.log('aint doing shit');
             }
             else{
-                console.log('calculating heuristic');
                 neighbor.hScore = heuristic(neighbor, end);
             }
           neighbor.fScore = neighbor.gScore + neighbor.hScore;
@@ -55,7 +53,7 @@ function performAstar(){
   } else {
     // No solution
     console.log('no solution');
-    noLoop();
+    //noLoop();
     return;
   }
   background(color(179,0,0));
