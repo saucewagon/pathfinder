@@ -12,12 +12,13 @@ var astar = true;
 var run = true;
 var buttons = [];
 var dijkstra = false;
+var canvas;
 
 function setup() {
-  var cnv = createCanvas(500*1.5,500);
+  canvas = createCanvas(500*1.5,500);
   var x = (windowWidth - width) / 2;
   var y = (windowHeight - height) / 2;
-  cnv.position(x, y);
+  canvas.position(x, y);
 
   dijkstra = false;
   w = width / numCols;
@@ -49,6 +50,9 @@ function setup() {
   }
 }
 function draw() {
+  canvas.canvas.width  = window.innerWidth;
+  canvas.canvas.height = window.innerHeight;
+
   if (!run){
     //noLoop();
   }
